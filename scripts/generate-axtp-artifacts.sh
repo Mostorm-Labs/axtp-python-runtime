@@ -275,3 +275,5 @@ await writeFile(path.join(outDir, "axtp_ids_generated.py"), ids);
 await writeFile(path.join(outDir, "registry.py"), registry);
 console.log(`[OK] generated Python artifacts: ${outDir}`);
 NODE
+
+AXTP_SPEC_PATH="$spec" node "$root/scripts/axtp-versioning.mjs" generate --runtime-name axtp-python-runtime
