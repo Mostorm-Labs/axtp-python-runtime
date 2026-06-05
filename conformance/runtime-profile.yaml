@@ -1,0 +1,12 @@
+runtime: axtp-python-runtime
+spec_min: spec/v0.0.2
+required_levels:
+  - core
+  - framed-binary
+optional_levels:
+  - capability
+  - event
+  - stream
+unsupported_levels:
+  - websocket-jsonrpc
+
