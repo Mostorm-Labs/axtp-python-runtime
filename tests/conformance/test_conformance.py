@@ -379,7 +379,9 @@ def resolve_spec_path() -> Optional[Path]:
         if value is None:
             continue
         candidate = Path(value)
-        if Path(candidate, "conformance/manifest.yaml").is_file():
+        if Path(candidate, "docs/conformance/manifest.yaml").is_file() or Path(
+            candidate, "conformance/manifest.yaml"
+        ).is_file():
             return candidate
     return None
 
