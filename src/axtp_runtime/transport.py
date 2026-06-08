@@ -26,7 +26,7 @@ class AxtpWireMode(str, Enum):
 class TransportProfile:
     kind: TransportKind = TransportKind.Custom
     wire_mode: AxtpWireMode = AxtpWireMode.FramedBinary
-    default_rpc_encoding: RpcEncoding = RpcEncoding.Tlv
+    default_rpc_encoding: RpcEncoding = RpcEncoding.Json
     message_oriented: bool = False
     supports_text_message: bool = False
     supports_binary_message: bool = True

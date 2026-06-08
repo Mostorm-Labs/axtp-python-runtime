@@ -5,14 +5,12 @@ from .broker import BasicBroker, JsonRpcHandler, RawRpcHandler
 from .endpoint import AxtpEndpoint
 from .generated.axtp_ids_generated import ErrorCode, RpcBodyEncoding, RpcEncoding, RpcOp
 from .generated.registry import MethodRegistry
-from .model import RpcPayload
+from .model import RpcPayload, body_encoding_for_rpc_encoding
 from .transport import MockTransport
 
 
 def _body_encoding_for(encoding: RpcEncoding) -> RpcBodyEncoding:
-    if encoding in (RpcEncoding.Tlv, RpcEncoding.Binary):
-        return RpcBodyEncoding.Tlv8
-    return RpcBodyEncoding.RawBytes
+    return body_encoding_for_rpc_encoding(encoding)
 
 
 class AxtpClient:

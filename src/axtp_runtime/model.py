@@ -18,6 +18,19 @@ K_STANDARD_FRAME_CRC_SIZE = 2
 K_CONTROL_PAYLOAD_HEADER_SIZE = 5
 K_BINARY_RPC_HEADER_SIZE = 11
 K_STREAM_PAYLOAD_HEADER_SIZE = 16
+K_RPC_ENCODING_JSON_BINARY_VALUE = 0x04
+
+
+def rpc_encoding_json_binary() -> RpcEncoding:
+    return RpcEncoding(K_RPC_ENCODING_JSON_BINARY_VALUE)
+
+
+def is_json_binary_rpc_encoding(encoding: RpcEncoding) -> bool:
+    return int(encoding) == K_RPC_ENCODING_JSON_BINARY_VALUE
+
+
+def body_encoding_for_rpc_encoding(encoding: RpcEncoding) -> RpcBodyEncoding:
+    return RpcBodyEncoding.Tlv8 if is_json_binary_rpc_encoding(encoding) else RpcBodyEncoding.None_
 
 
 class SourceProtocol(IntEnum):
@@ -50,7 +63,7 @@ class RpcPayload:
     request_id: int = 0
     method_or_event_id: int = 0
     status_code: ErrorCode = ErrorCode.Success
-    body_encoding: RpcBodyEncoding = RpcBodyEncoding.Tlv8
+    body_encoding: RpcBodyEncoding = RpcBodyEncoding.None_
     meta: PayloadMeta = field(default_factory=PayloadMeta)
     body: bytes = b""
 

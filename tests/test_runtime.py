@@ -78,7 +78,7 @@ def test_framed_binary_rpc_round_trip_and_crc_drop():
         op=RpcOp.Request,
         request_id=7,
         method_or_event_id=MethodId.AudioGetAlgorithmConfig,
-        body_encoding=RpcBodyEncoding.RawBytes,
+        body_encoding=RpcBodyEncoding.None_,
         body=b"{}",
     )
     encoded = encode_rpc(payload)

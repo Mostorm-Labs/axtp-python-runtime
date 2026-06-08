@@ -2,9 +2,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Callable, Dict, List, Optional
 
-from .generated.axtp_ids_generated import ErrorCode, RpcBodyEncoding, RpcEncoding, RpcOp
+from .generated.axtp_ids_generated import ErrorCode, RpcEncoding, RpcOp
 from .generated.registry import MethodRegistry
-from .model import RpcPayload
+from .model import RpcPayload, body_encoding_for_rpc_encoding
 
 
 class BrokerTaskType(str, Enum):
@@ -96,8 +96,7 @@ class BusinessRouter:
         try:
             body = handler(context, request)
             response.body = body if isinstance(body, bytes) else bytes(body)
-            if request.encoding == RpcEncoding.Json:
-                response.body_encoding = RpcBodyEncoding.RawBytes
+            response.body_encoding = body_encoding_for_rpc_encoding(request.encoding)
         except Exception:
             response.status_code = ErrorCode.RpcExecutionFailed
         return response

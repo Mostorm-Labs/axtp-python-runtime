@@ -251,7 +251,7 @@ def case_request_response_json():
             op=RpcOp.Request,
             request_id=1,
             method_or_event_id=MethodId.AudioGetAlgorithmConfig,
-            body_encoding=RpcBodyEncoding.RawBytes,
+            body_encoding=RpcBodyEncoding.None_,
             body=b"{}",
         ),
         configure,
@@ -273,7 +273,7 @@ def case_method_not_found_with_id(request_id: int):
             op=RpcOp.Request,
             request_id=request_id,
             method_or_event_id=0x7FFF,
-            body_encoding=RpcBodyEncoding.RawBytes,
+            body_encoding=RpcBodyEncoding.None_,
             body=b"{}",
         )
     )
@@ -293,7 +293,7 @@ def case_event_emit():
             encoding=RpcEncoding.Json,
             op=RpcOp.Event,
             method_or_event_id=EventId.AudioAlgorithmConfigChanged,
-            body_encoding=RpcBodyEncoding.RawBytes,
+            body_encoding=RpcBodyEncoding.None_,
             meta=PayloadMeta(SourceProtocol.JsonRpc, 0, 0, "s1"),
             body=b'{"reason":"user_request","applyState":"applied"}',
         )
