@@ -9,13 +9,13 @@ class ByteWriter:
         self._data.append(value & 0xFF)
 
     def write_u16(self, value: int) -> None:
-        self._data.extend(int(value).to_bytes(2, "little", signed=False))
+        self._data.extend(int(value).to_bytes(2, "big", signed=False))
 
     def write_u32(self, value: int) -> None:
-        self._data.extend(int(value).to_bytes(4, "little", signed=False))
+        self._data.extend(int(value).to_bytes(4, "big", signed=False))
 
     def write_u64(self, value: int) -> None:
-        self._data.extend(int(value).to_bytes(8, "little", signed=False))
+        self._data.extend(int(value).to_bytes(8, "big", signed=False))
 
     def write_bytes(self, data: bytes) -> None:
         self._data.extend(data)
@@ -70,7 +70,7 @@ class ByteReader:
         data = self.read_bytes(count)
         if data is None:
             return None
-        return int.from_bytes(data, "little", signed=False)
+        return int.from_bytes(data, "big", signed=False)
 
 
 def crc16_ccitt_false(data: bytes) -> int:
