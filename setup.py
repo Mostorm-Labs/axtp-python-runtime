@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="axtp-runtime",
-    version="0.6.0",
+    version="0.6.1",
     description="Python runtime primitives for AXTP",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
