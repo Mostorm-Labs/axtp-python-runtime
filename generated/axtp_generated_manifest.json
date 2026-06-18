@@ -1,24 +1,24 @@
 {
-  "generatedAt": "2026-06-17T03:38:23Z",
+  "generatedAt": "2026-06-18T15:44:28Z",
   "generator": {
     "name": "@axtp/python-runtime-generator",
     "version": "1.0.0",
-    "commit": "9d17aaf87011f57c007d73d2d3d748cef1811a2d"
+    "commit": "fcaa6b4a44010667beceacbe2ecfb37a642d2d71"
   },
   "axtpSpec": {
     "repository": "https://github.com/Mostorm-Labs/axtp",
-    "tag": "spec/v0.6.1",
-    "version": "0.6.1",
-    "commit": "9d8bbdab5bd1c4b3c405080c8aae652ba6c3f08e"
+    "tag": "spec/v0.7.0",
+    "version": "0.7.0",
+    "commit": "e359d5426d973c4ec03cc91a02f540e7c450039c"
   },
   "runtime": {
     "name": "axtp-python-runtime",
-    "version": "0.6.1",
-    "commit": "9d17aaf87011f57c007d73d2d3d748cef1811a2d"
+    "version": "0.7.0",
+    "commit": "fcaa6b4a44010667beceacbe2ecfb37a642d2d71"
   },
   "inputs": {
-    "registryHash": "sha256:42437074ffebd6685e10db9796f284fa00d370125baf828cefb0041e1d1b8643",
+    "registryHash": "sha256:3470943a04d408ede20226d26c965bde053e342f2991a567c18bb7351af85377",
     "schemasHash": null,
-    "conformanceHash": "sha256:d0c94228a0a7541cba3eecdb2f4401667f92479e8488ce65c6ae4fb2387b1028"
+    "conformanceHash": "sha256:e9df626abcd7712b70774fda7f7ea4998b487afb3681b5fc5392d01f414f1437"
   }
 }
