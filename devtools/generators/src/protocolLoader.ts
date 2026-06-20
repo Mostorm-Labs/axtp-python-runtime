@@ -1,7 +1,9 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
 import { GeneratorError } from "./errors.js";
+import { resolveContractRoot } from "./loader.js";
 import type {
   CompatibilityDefinition,
   CapabilityDefinition,
@@ -333,7 +335,12 @@ function mapCompatibility(value: unknown): CompatibilityDefinition {
 }
 
 export async function loadProtocolDefinition(specRoot: string): Promise<ProtocolModel> {
-  const sourcePath = path.join(specRoot, "protocol", "axtp.protocol.yaml");
+  const contractRoot = resolveContractRoot(specRoot);
+  const candidates = [
+    path.join(contractRoot, "protocol", "axtp.protocol.yaml"),
+    path.join(specRoot, "protocol", "axtp.protocol.yaml")
+  ];
+  const sourcePath = candidates.find((candidate) => existsSync(candidate)) ?? candidates[0];
   let raw: any;
   try {
     raw = YAML.parse(await readFile(sourcePath, "utf8")) ?? {};
