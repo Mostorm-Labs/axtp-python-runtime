@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-06-20T04:17:44Z",
+  "generatedAt": "2026-06-20T04:54:17Z",
   "generator": {
     "name": "@axtp/python-runtime-generator",
     "version": "1.0.0",
-    "commit": "64bded6fdbe9db22ed52bd0a2ca29a503748fa46"
+    "commit": "853359f416eb6c9da95b92b6cd6a5dc2cdb692fd"
   },
   "axtpSpec": {
     "repository": "https://github.com/Mostorm-Labs/axtp",
-    "tag": "spec/v0.8.3",
-    "version": "0.8.3",
-    "commit": "6807847665664c44a6d4a5f31b61611d6c5e0f18"
+    "tag": "spec/v0.8.4",
+    "version": "0.8.4",
+    "commit": "e753aef6779ffee759382fff6ff128f9c4409f0c"
   },
   "runtime": {
     "name": "axtp-python-runtime",
-    "version": "0.8.3",
-    "commit": "64bded6fdbe9db22ed52bd0a2ca29a503748fa46"
+    "version": "0.8.4",
+    "commit": "853359f416eb6c9da95b92b6cd6a5dc2cdb692fd"
   },
   "inputs": {
     "registryHash": "sha256:44b9076a3ebc28c144bb5a0ed3d9a3c5eae2df1b12fce9850df1ec5735424482",
