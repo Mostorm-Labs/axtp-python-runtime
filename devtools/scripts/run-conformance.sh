@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 spec_path="${AXTP_SPEC_PATH:-}"
 if [[ -z "$spec_path" ]]; then
@@ -26,13 +26,13 @@ if [[ -z "$spec_path" || -z "$conformance_dir" ]]; then
   exit 2
 fi
 
-profile_path="$root/conformance/runtime-profile.yaml"
+profile_path="$root/devtools/conformance/runtime-profile.yaml"
 if [[ ! -f "$profile_path" ]]; then
   echo "Missing runtime conformance profile: $profile_path" >&2
   exit 2
 fi
 
-result_dir="$root/conformance-results"
+result_dir="${CONFORMANCE_RESULT_DIR:-$root/build/conformance-results}"
 result_path="$result_dir/result.json"
 mkdir -p "$result_dir"
 
@@ -40,7 +40,7 @@ PYTHONPATH="$root/src${PYTHONPATH:+:$PYTHONPATH}" \
 AXTP_SPEC_PATH="$spec_path" \
 CONFORMANCE_PROFILE_PATH="$profile_path" \
 CONFORMANCE_RESULT_PATH="$result_path" \
-python -m pytest tests/conformance/test_conformance.py
+python -m pytest "$root/tests/conformance/test_conformance.py"
 
 node - "$conformance_dir/schemas/conformance-result.schema.json" "$result_path" <<'NODE'
 const fs = require("node:fs");

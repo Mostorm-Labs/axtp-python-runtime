@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
 import { GeneratorError } from "./errors.js";
-import { loadSpec } from "./loader.js";
+import { loadSpec, resolveContractRoot } from "./loader.js";
 import type { ProtocolSourceModel } from "./sourceModel.js";
 import type { Capability, ErrorCode, Event, Field, LegacyMapping, Method, Schema } from "./models.js";
 import { normalizeId } from "./util.js";
@@ -157,18 +157,19 @@ function mapSchemas(doc: any, file: string): Schema[] {
 }
 
 export async function loadProtocolSources(specRoot: string): Promise<ProtocolSourceModel> {
-  const legacyDomainFiles = await listYamlFiles(path.join(specRoot, "domains"));
+  const contractRoot = resolveContractRoot(specRoot);
+  const legacyDomainFiles = await listYamlFiles(path.join(contractRoot, "domains"));
   if (legacyDomainFiles.length > 0) {
     throw new GeneratorError({
       code: "AXTP-GEN-1004",
       file: "domains/",
-      message: `top-level domains/ is deprecated; move YAML files to registry/domains/. Found: ${legacyDomainFiles.map((file) => path.relative(specRoot, file)).join(", ")}`
+      message: `top-level domains/ is deprecated; move YAML files to registry/domains/. Found: ${legacyDomainFiles.map((file) => path.relative(contractRoot, file)).join(", ")}`
     });
   }
   const spec = await loadSpec(specRoot);
-  const protocolMetaPath = path.join(specRoot, "registry", "core", "protocol_meta.yaml");
+  const protocolMetaPath = path.join(contractRoot, "registry", "core", "protocol_meta.yaml");
   const protocolMeta = await loadYamlFile(protocolMetaPath);
-  const domainFiles = await listYamlFiles(path.join(specRoot, "registry", "domains"));
+  const domainFiles = await listYamlFiles(path.join(contractRoot, "registry", "domains"));
   const sourceFiles = [protocolMetaPath, ...domainFiles];
   const profiles: Array<Record<string, unknown>> = [];
 

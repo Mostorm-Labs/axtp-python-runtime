@@ -110,18 +110,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bash -n scripts/*.sh
-          scripts/check-axtp-spec-lock.sh
-          scripts/check-generated-version.sh
+          bash -n devtools/scripts/*.sh
+          devtools/scripts/check-axtp-spec-lock.sh
+          devtools/scripts/check-generated-version.sh
 
       - name: Build generator
         if: steps.guard.outputs.should_run == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir generators install --frozen-lockfile
-          pnpm --dir generators build
-          AXTP_SPEC_PATH="$GITHUB_WORKSPACE/third_party/axtp-spec" pnpm --dir generators test
+          pnpm --dir devtools/generators install --frozen-lockfile
+          pnpm --dir devtools/generators build
+          AXTP_SPEC_PATH="$GITHUB_WORKSPACE/third_party/axtp-spec" pnpm --dir devtools/generators test
 
       - name: Root package checks
         if: steps.guard.outputs.should_run == 'true'
@@ -230,7 +230,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          CONFORMANCE_ALLOW_INCOMPLETE=true AXTP_SPEC_PATH="$GITHUB_WORKSPACE/third_party/axtp-spec" scripts/run-conformance.sh
+          CONFORMANCE_ALLOW_INCOMPLETE=true AXTP_SPEC_PATH="$GITHUB_WORKSPACE/third_party/axtp-spec" devtools/scripts/run-conformance.sh
 
       - name: Enable GitHub auto-merge
         if: steps.guard.outputs.should_run == 'true'

@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import YAML from "yaml";
@@ -40,6 +41,25 @@ async function loadOptionalYamlFile(filePath: string): Promise<any> {
       message: error instanceof Error ? error.message : String(error)
     });
   }
+}
+
+export function resolveContractRoot(specRoot: string): string {
+  if (existsSync(path.join(specRoot, "registry"))) return specRoot;
+  if (existsSync(path.join(specRoot, "contract", "registry"))) {
+    return path.join(specRoot, "contract");
+  }
+  return specRoot;
+}
+
+function resolveGeneratorConfigPath(specRoot: string, contractRoot: string): string {
+  const candidates = [
+    path.join(specRoot, "tooling", "generators", "generator.yaml"),
+    path.join(specRoot, "generators", "generator.yaml"),
+    path.join(contractRoot, "generators", "generator.yaml"),
+    path.join(contractRoot, "generator.yaml"),
+    path.join(specRoot, "generator.yaml")
+  ];
+  return candidates.find((candidate) => existsSync(candidate)) ?? candidates[candidates.length - 1];
 }
 
 function asArray(value: unknown): any[] {
@@ -174,17 +194,10 @@ function mapSchemas(doc: any, file: string): Schema[] {
 }
 
 export async function loadSpec(specRoot: string): Promise<SpecModel> {
-  const registryDir = path.join(specRoot, "registry");
+  const contractRoot = resolveContractRoot(specRoot);
+  const registryDir = path.join(contractRoot, "registry");
   const schemaDir = path.join(registryDir, "schema");
-  const configPath = await (async () => {
-    const current = path.join(specRoot, "generators", "generator.yaml");
-    try {
-      await readFile(current, "utf8");
-      return current;
-    } catch {
-      return path.join(specRoot, "generator.yaml");
-    }
-  })();
+  const configPath = resolveGeneratorConfigPath(specRoot, contractRoot);
   const config = await loadYamlFile(configPath);
   const version = await loadYamlFile(path.join(registryDir, "version.yaml"));
 

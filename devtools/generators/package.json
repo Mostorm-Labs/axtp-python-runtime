@@ -11,9 +11,9 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "lint": "tsc -p tsconfig.json --noEmit",
-    "validate": "node dist/cli.js validate --spec ${AXTP_SPEC_PATH:-../third_party/axtp-spec}",
-    "validate:sources": "node dist/cli.js validate-sources --spec ${AXTP_SPEC_PATH:-../third_party/axtp-spec}",
-    "validate:protocol": "node dist/cli.js validate-protocol --spec ${AXTP_SPEC_PATH:-../third_party/axtp-spec}",
+    "validate": "node dist/cli.js validate --spec ${AXTP_SPEC_PATH:-../../third_party/axtp-spec}",
+    "validate:sources": "node dist/cli.js validate-sources --spec ${AXTP_SPEC_PATH:-../../third_party/axtp-spec}",
+    "validate:protocol": "node dist/cli.js validate-protocol --spec ${AXTP_SPEC_PATH:-../../third_party/axtp-spec}",
     "generate:runtime": "../scripts/generate-axtp-artifacts.sh"
   },
   "dependencies": {

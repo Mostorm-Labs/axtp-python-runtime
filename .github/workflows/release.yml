@@ -74,15 +74,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --dir generators install --frozen-lockfile
-          pnpm --dir generators build
+          pnpm --dir devtools/generators install --frozen-lockfile
+          pnpm --dir devtools/generators build
 
       - name: Version release checks
         shell: bash
         run: |
           set -euo pipefail
-          bash -n scripts/*.sh
-          scripts/check-runtime-release.sh "$RUNTIME_VERSION"
+          bash -n devtools/scripts/*.sh
+          devtools/scripts/check-runtime-release.sh "$RUNTIME_VERSION"
 
       - name: Root package checks
         shell: bash
@@ -194,7 +194,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          AXTP_SPEC_PATH="$GITHUB_WORKSPACE/third_party/axtp-spec" scripts/run-conformance.sh
+          AXTP_SPEC_PATH="$GITHUB_WORKSPACE/third_party/axtp-spec" devtools/scripts/run-conformance.sh
 
       - name: Package release artifacts
         shell: bash
@@ -230,7 +230,7 @@ jobs:
         run: |
           set -euo pipefail
           runtime_name="${GITHUB_REPOSITORY#*/}"
-          node scripts/axtp-versioning.mjs release-notes --runtime-name "$runtime_name" --out "$RUNNER_TEMP/release-notes.md"
+          node devtools/scripts/axtp-versioning.mjs release-notes --runtime-name "$runtime_name" --out "$RUNNER_TEMP/release-notes.md"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

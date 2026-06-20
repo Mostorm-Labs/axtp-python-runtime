@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(scriptDir, "..");
+const root = path.resolve(scriptDir, "../..");
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -104,7 +104,7 @@ async function readRuntimeVersion(runtimeName) {
 }
 
 async function readGeneratorMetadata() {
-  const pkg = await readJson(path.join(root, "generators/package.json"));
+  const pkg = await readJson(path.join(root, "devtools/generators/package.json"));
   return {
     name: pkg.name,
     version: pkg.version,
@@ -144,6 +144,10 @@ async function hashDirectory(dir) {
 function resolveSpecRoot() {
   if (process.env.AXTP_SPEC_PATH) return process.env.AXTP_SPEC_PATH;
   return path.join(root, "third_party/axtp-spec");
+}
+
+function firstExistingDirectory(...directories) {
+  return directories.find((dir) => existsSync(dir)) ?? directories[0];
 }
 
 function generatedAt() {
@@ -278,6 +282,7 @@ async function writeVersionMetadata(runtimeName) {
   const lock = await readSpecLock();
   const generator = await readGeneratorMetadata();
   const specRoot = resolveSpecRoot();
+  const contractRoot = firstExistingDirectory(path.join(specRoot, "contract"), specRoot);
   const manifest = {
     generatedAt: generatedAt(),
     generator,
@@ -293,8 +298,14 @@ async function writeVersionMetadata(runtimeName) {
       commit: gitValue(["rev-parse", "HEAD"])
     },
     inputs: {
-      registryHash: await hashDirectory(path.join(specRoot, "registry")),
-      schemasHash: await hashDirectory(path.join(specRoot, "schemas")),
+      registryHash: await hashDirectory(firstExistingDirectory(
+        path.join(specRoot, "registry"),
+        path.join(contractRoot, "registry")
+      )),
+      schemasHash: await hashDirectory(firstExistingDirectory(
+        path.join(specRoot, "schemas"),
+        path.join(contractRoot, "schemas")
+      )),
       conformanceHash: (await hashDirectory(path.join(specRoot, "docs", "conformance"))) ?? await hashDirectory(path.join(specRoot, "conformance"))
     }
   };

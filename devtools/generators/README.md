@@ -8,10 +8,10 @@ match `AXTP_SPEC.lock.yaml`.
 
 ```bash
 export AXTP_SPEC_PATH=/path/to/axtp
-pnpm --dir generators install
-pnpm --dir generators build
-pnpm --dir generators test
-pnpm --dir generators generate:runtime
+pnpm --dir devtools/generators install
+pnpm --dir devtools/generators build
+pnpm --dir devtools/generators test
+pnpm --dir devtools/generators generate:runtime
 ```
 
 Generated Python artifacts are written to `src/axtp_runtime/generated/`.

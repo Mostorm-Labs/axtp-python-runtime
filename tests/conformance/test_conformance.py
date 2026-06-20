@@ -388,8 +388,8 @@ def resolve_spec_path() -> Optional[Path]:
 
 def test_conformance():
     spec_path = resolve_spec_path()
-    profile_path = os.environ.get("CONFORMANCE_PROFILE_PATH", "conformance/runtime-profile.yaml")
-    result_path = Path(os.environ.get("CONFORMANCE_RESULT_PATH", "conformance-results/result.json"))
+    profile_path = os.environ.get("CONFORMANCE_PROFILE_PATH", "devtools/conformance/runtime-profile.yaml")
+    result_path = Path(os.environ.get("CONFORMANCE_RESULT_PATH", "build/conformance-results/result.json"))
     assert spec_path is not None
     assert Path(profile_path).is_file()
 
