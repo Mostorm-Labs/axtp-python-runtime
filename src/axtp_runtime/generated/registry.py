@@ -78,6 +78,24 @@ K_METHOD_REGISTRY: Sequence[MethodDescriptor] = (
     MethodDescriptor(0x0E12, "network.getWifiCapabilities", "network", "NetworkGetWifiCapabilitiesParams", "NetworkWifiCapabilities"),
     MethodDescriptor(0x0E13, "network.getApCapabilities", "network", "NetworkGetApCapabilitiesParams", "NetworkApCapabilities"),
     MethodDescriptor(0x0E14, "network.getApClients", "network", "NetworkGetApConfigParams", "NetworkApClients"),
+    MethodDescriptor(0x1601, "cast.getSession", "cast", "CastGetSessionParams", "CastSessionState"),
+    MethodDescriptor(0x1602, "cast.stopSession", "cast", "CastStopSessionParams", "CastStopSessionResult"),
+    MethodDescriptor(0x1603, "cast.getAirPlayName", "cast", "Empty", "CastAirPlayNameState"),
+    MethodDescriptor(0x1604, "cast.setAirPlayName", "cast", "CastSetAirPlayNameParams", "CastAirPlayNameState"),
+    MethodDescriptor(0x1605, "cast.getAudio", "cast", "CastGetAudioParams", "CastAudioState"),
+    MethodDescriptor(0x1606, "cast.setAudio", "cast", "CastSetAudioParams", "CastAudioState"),
+    MethodDescriptor(0x1607, "cast.setMuted", "cast", "CastSetMutedParams", "CastAudioState"),
+    MethodDescriptor(0x1608, "cast.getPinCodeConfig", "cast", "CastGetPinCodeConfigParams", "CastPinCodeConfig"),
+    MethodDescriptor(0x1609, "cast.setPinCodeConfig", "cast", "CastSetPinCodeConfigParams", "CastPinCodeConfig"),
+    MethodDescriptor(0x160A, "cast.setPinCode", "cast", "CastSetPinCodeParams", "CastPinCodeConfig"),
+    MethodDescriptor(0x160B, "cast.getWindowState", "cast", "Empty", "CastWindowState"),
+    MethodDescriptor(0x160C, "cast.setWindowState", "cast", "CastSetWindowStateParams", "CastWindowState"),
+    MethodDescriptor(0x160D, "cast.getBackendStatus", "cast", "CastGetBackendStatusParams", "CastBackendStatus"),
+    MethodDescriptor(0x160E, "cast.restartBackend", "cast", "CastRestartBackendParams", "CastRestartBackendResult"),
+    MethodDescriptor(0x160F, "cast.getFlowControlState", "cast", "CastGetFlowControlStateParams", "CastFlowControlState"),
+    MethodDescriptor(0x1610, "cast.setRenderFps", "cast", "CastSetRenderFpsParams", "CastFlowControlState"),
+    MethodDescriptor(0x1611, "cast.setFlowPolicy", "cast", "CastSetFlowPolicyParams", "CastFlowControlState"),
+    MethodDescriptor(0x1612, "cast.getStatus", "cast", "CastGetStatusParams", "CastStatus"),
 )
 
 K_EVENT_REGISTRY: Sequence[EventDescriptor] = (
@@ -98,6 +116,19 @@ K_EVENT_REGISTRY: Sequence[EventDescriptor] = (
     EventDescriptor(0x0E06, "network.apConfigChanged", "network", "NetworkApConfigChangedEvent"),
     EventDescriptor(0x0E07, "network.apStateChanged", "network", "NetworkApStateChangedEvent"),
     EventDescriptor(0x0E08, "network.apClientChanged", "network", "NetworkApClientChangedEvent"),
+    EventDescriptor(0x1601, "cast.sessionIncoming", "cast", "CastSessionIncomingEvent"),
+    EventDescriptor(0x1602, "cast.sessionStateChanged", "cast", "CastSessionStateChangedEvent"),
+    EventDescriptor(0x1603, "cast.sessionStarted", "cast", "CastSessionStartedEvent"),
+    EventDescriptor(0x1604, "cast.sessionStopped", "cast", "CastSessionStoppedEvent"),
+    EventDescriptor(0x1605, "cast.sessionFailed", "cast", "CastSessionFailedEvent"),
+    EventDescriptor(0x1606, "cast.audioChanged", "cast", "CastAudioChangedEvent"),
+    EventDescriptor(0x1607, "cast.pinCodeChanged", "cast", "CastPinCodeChangedEvent"),
+    EventDescriptor(0x1608, "cast.pinCodeRequired", "cast", "CastPinCodeRequiredEvent"),
+    EventDescriptor(0x1609, "cast.pinCodeAuthFailed", "cast", "CastPinCodeAuthFailedEvent"),
+    EventDescriptor(0x160A, "cast.windowChanged", "cast", "CastWindowChangedEvent"),
+    EventDescriptor(0x160B, "cast.backendChanged", "cast", "CastBackendChangedEvent"),
+    EventDescriptor(0x160C, "cast.flowControlChanged", "cast", "CastFlowControlChangedEvent"),
+    EventDescriptor(0x160D, "cast.statusChanged", "cast", "CastStatusChangedEvent"),
 )
 
 K_ERROR_REGISTRY: Sequence[ErrorDescriptor] = (
@@ -271,6 +302,13 @@ K_CAPABILITY_REGISTRY: Sequence[CapabilityDescriptor] = (
     CapabilityDescriptor(0x0E02, "network.ip", "network", "object", "NetworkIpCapability"),
     CapabilityDescriptor(0x0E03, "network.wifi", "network", "object", "NetworkWifiCapabilities"),
     CapabilityDescriptor(0x0E04, "network.ap", "network", "object", "NetworkApCapabilities"),
+    CapabilityDescriptor(0x1601, "cast.session", "cast", "object", "CastSessionCapability"),
+    CapabilityDescriptor(0x1602, "cast.audio", "cast", "object", "CastAudioCapability"),
+    CapabilityDescriptor(0x1603, "cast.pinCode", "cast", "object", "CastPinCodeCapability"),
+    CapabilityDescriptor(0x1604, "cast.window", "cast", "object", "CastWindowCapability"),
+    CapabilityDescriptor(0x1605, "cast.backend", "cast", "object", "CastBackendCapability"),
+    CapabilityDescriptor(0x1606, "cast.flowControl", "cast", "object", "CastFlowControlCapability"),
+    CapabilityDescriptor(0x1607, "cast.status", "cast", "object", "CastStatusCapability"),
 )
 
 
