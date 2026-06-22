@@ -95,6 +95,24 @@ class MethodId(IntEnum):
     NetworkGetWifiCapabilities = 0x0E12
     NetworkGetApCapabilities = 0x0E13
     NetworkGetApClients = 0x0E14
+    CastGetSession = 0x1601
+    CastStopSession = 0x1602
+    CastGetAirPlayName = 0x1603
+    CastSetAirPlayName = 0x1604
+    CastGetAudio = 0x1605
+    CastSetAudio = 0x1606
+    CastSetMuted = 0x1607
+    CastGetPinCodeConfig = 0x1608
+    CastSetPinCodeConfig = 0x1609
+    CastSetPinCode = 0x160A
+    CastGetWindowState = 0x160B
+    CastSetWindowState = 0x160C
+    CastGetBackendStatus = 0x160D
+    CastRestartBackend = 0x160E
+    CastGetFlowControlState = 0x160F
+    CastSetRenderFps = 0x1610
+    CastSetFlowPolicy = 0x1611
+    CastGetStatus = 0x1612
 
 
 class EventId(IntEnum):
@@ -115,6 +133,19 @@ class EventId(IntEnum):
     NetworkApConfigChanged = 0x0E06
     NetworkApStateChanged = 0x0E07
     NetworkApClientChanged = 0x0E08
+    CastSessionIncoming = 0x1601
+    CastSessionStateChanged = 0x1602
+    CastSessionStarted = 0x1603
+    CastSessionStopped = 0x1604
+    CastSessionFailed = 0x1605
+    CastAudioChanged = 0x1606
+    CastPinCodeChanged = 0x1607
+    CastPinCodeRequired = 0x1608
+    CastPinCodeAuthFailed = 0x1609
+    CastWindowChanged = 0x160A
+    CastBackendChanged = 0x160B
+    CastFlowControlChanged = 0x160C
+    CastStatusChanged = 0x160D
 
 
 class ErrorCode(IntEnum):
@@ -288,3 +319,10 @@ class CapabilityId(IntEnum):
     NetworkIp = 0x0E02
     NetworkWifi = 0x0E03
     NetworkAp = 0x0E04
+    CastSession = 0x1601
+    CastAudio = 0x1602
+    CastPinCode = 0x1603
+    CastWindow = 0x1604
+    CastBackend = 0x1605
+    CastFlowControl = 0x1606
+    CastStatus = 0x1607
