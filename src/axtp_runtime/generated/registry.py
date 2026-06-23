@@ -41,6 +41,9 @@ class CapabilityDescriptor:
 
 K_METHOD_REGISTRY: Sequence[MethodDescriptor] = (
     MethodDescriptor(0x0101, "device.getInfo", "device", "GetDeviceInfoParams", "DeviceInfo"),
+    MethodDescriptor(0x0102, "device.getPairingCode", "device", "DeviceGetPairingCodeParams", "DevicePairingCodeInfo"),
+    MethodDescriptor(0x0103, "device.getEnrollmentState", "device", "DeviceGetEnrollmentStateParams", "DeviceEnrollmentInfo"),
+    MethodDescriptor(0x0104, "device.setEnrollmentState", "device", "DeviceSetEnrollmentStateParams", "DeviceSetEnrollmentStateResult"),
     MethodDescriptor(0x0401, "firmware.getUpdateCapabilities", "firmware", "Empty", "FirmwareUpdateCapabilities"),
     MethodDescriptor(0x0402, "firmware.beginUpdate", "firmware", "BeginUpdateParams", "BeginUpdateResult"),
     MethodDescriptor(0x0408, "firmware.getUpdateState", "firmware", "GetUpdateStateParams", "FirmwareUpdateState"),
@@ -60,6 +63,11 @@ K_METHOD_REGISTRY: Sequence[MethodDescriptor] = (
     MethodDescriptor(0x0911, "audio.closeStream", "audio", "AudioCloseStreamParams", "AudioCloseStreamResult"),
     MethodDescriptor(0x0912, "audio.getStreamState", "audio", "AudioGetStreamStateParams", "AudioStreamState"),
     MethodDescriptor(0x0913, "audio.getStreamSourceState", "audio", "AudioGetStreamSourceStateParams", "AudioStreamSourceState"),
+    MethodDescriptor(0x0D01, "signage.getPlaylistCapabilities", "signage", "SignageGetPlaylistCapabilitiesParams", "SignagePlaylistCapabilitiesResult"),
+    MethodDescriptor(0x0D02, "signage.getPlaylistConfig", "signage", "SignageGetPlaylistConfigParams", "SignagePlaylistConfigResult"),
+    MethodDescriptor(0x0D03, "signage.setPlaylistConfig", "signage", "SignageSetPlaylistConfigParams", "SignageSetPlaylistConfigResult"),
+    MethodDescriptor(0x0D04, "signage.resetPlaylistConfig", "signage", "SignageResetPlaylistConfigParams", "SignagePlaylistConfigResult"),
+    MethodDescriptor(0x0D05, "signage.getPlaylistItemUrl", "signage", "SignageGetPlaylistItemUrlParams", "SignageGetPlaylistItemUrlResult"),
     MethodDescriptor(0x0E02, "network.getIpConfig", "network", "NetworkGetIpConfigParams", "NetworkIpConfig"),
     MethodDescriptor(0x0E03, "network.setIpConfig", "network", "NetworkSetIpConfigParams", "NetworkSetIpConfigResult"),
     MethodDescriptor(0x0E04, "network.getWifiConfig", "network", "NetworkGetWifiConfigParams", "NetworkWifiConfig"),
@@ -96,9 +104,16 @@ K_METHOD_REGISTRY: Sequence[MethodDescriptor] = (
     MethodDescriptor(0x1610, "cast.setRenderFps", "cast", "CastSetRenderFpsParams", "CastFlowControlState"),
     MethodDescriptor(0x1611, "cast.setFlowPolicy", "cast", "CastSetFlowPolicyParams", "CastFlowControlState"),
     MethodDescriptor(0x1612, "cast.getStatus", "cast", "CastGetStatusParams", "CastStatus"),
+    MethodDescriptor(0x1701, "software.getConfig", "software", "SoftwareGetConfigParams", "SoftwareConfig"),
+    MethodDescriptor(0x1702, "software.setConfig", "software", "SoftwareSetConfigParams", "SoftwareSetConfigResult"),
+    MethodDescriptor(0x1703, "software.resetConfig", "software", "SoftwareResetConfigParams", "SoftwareConfig"),
+    MethodDescriptor(0x1704, "software.getUpdatePolicy", "software", "SoftwareGetUpdatePolicyParams", "SoftwareUpdatePolicy"),
+    MethodDescriptor(0x1705, "software.setUpdatePolicy", "software", "SoftwareSetUpdatePolicyParams", "SoftwareSetUpdatePolicyResult"),
+    MethodDescriptor(0x1706, "software.resetUpdatePolicy", "software", "SoftwareResetUpdatePolicyParams", "SoftwareUpdatePolicy"),
 )
 
 K_EVENT_REGISTRY: Sequence[EventDescriptor] = (
+    EventDescriptor(0x0102, "device.enrollmentStateChanged", "device", "DeviceEnrollmentStateChangedEvent"),
     EventDescriptor(0x0402, "firmware.updateProgressReported", "firmware", "FirmwareUpdateProgressEvent"),
     EventDescriptor(0x0403, "firmware.updateStateChanged", "firmware", "FirmwareUpdateStateChangedEvent"),
     EventDescriptor(0x0806, "video.streamStateChanged", "video", "VideoStreamStateChangedEvent"),
@@ -108,6 +123,7 @@ K_EVENT_REGISTRY: Sequence[EventDescriptor] = (
     EventDescriptor(0x0902, "audio.streamStateChanged", "audio", "AudioStreamStateChangedEvent"),
     EventDescriptor(0x0903, "audio.streamSourceStateChanged", "audio", "AudioStreamSourceStateChangedEvent"),
     EventDescriptor(0x0904, "audio.streamStatsReported", "audio", "AudioStreamStatsReportedEvent"),
+    EventDescriptor(0x0D01, "signage.playlistConfigChanged", "signage", "SignagePlaylistConfigChangedEvent"),
     EventDescriptor(0x0E01, "network.interfaceStateChanged", "network", "NetworkInterfaceStateChangedEvent"),
     EventDescriptor(0x0E02, "network.ipConfigChanged", "network", "NetworkIpConfigChangedEvent"),
     EventDescriptor(0x0E03, "network.wifiConfigChanged", "network", "NetworkWifiConfigChangedEvent"),
@@ -129,6 +145,8 @@ K_EVENT_REGISTRY: Sequence[EventDescriptor] = (
     EventDescriptor(0x160B, "cast.backendChanged", "cast", "CastBackendChangedEvent"),
     EventDescriptor(0x160C, "cast.flowControlChanged", "cast", "CastFlowControlChangedEvent"),
     EventDescriptor(0x160D, "cast.statusChanged", "cast", "CastStatusChangedEvent"),
+    EventDescriptor(0x1701, "software.configChanged", "software", "SoftwareConfigChangedEvent"),
+    EventDescriptor(0x1702, "software.updatePolicyChanged", "software", "SoftwareUpdatePolicyChangedEvent"),
 )
 
 K_ERROR_REGISTRY: Sequence[ErrorDescriptor] = (
@@ -200,6 +218,8 @@ K_ERROR_REGISTRY: Sequence[ErrorDescriptor] = (
     ErrorDescriptor(0x0107, "DEVICE_MODE_CONFLICT", "device", False),
     ErrorDescriptor(0x0108, "DEVICE_RESOURCE_BUSY", "device", True),
     ErrorDescriptor(0x0109, "DEVICE_HARDWARE_FAILURE", "device", False),
+    ErrorDescriptor(0x010A, "ENROLLMENT_CODE_EXPIRED", "device", True),
+    ErrorDescriptor(0x010B, "ENROLLMENT_CODE_ALREADY_USED", "device", False),
     ErrorDescriptor(0x0201, "CAPABILITY_NOT_FOUND", "capability", False),
     ErrorDescriptor(0x0202, "CAPABILITY_DOMAIN_NOT_FOUND", "capability", False),
     ErrorDescriptor(0x0203, "CAPABILITY_METHOD_UNSUPPORTED", "capability", False),
@@ -294,10 +314,12 @@ K_CAPABILITY_REGISTRY: Sequence[CapabilityDescriptor] = (
     CapabilityDescriptor(0x0003, "protocol.payload.stream", "protocol", "bool", ""),
     CapabilityDescriptor(0x0009, "protocol.reservedRequestIdWidth", "protocol", "reserved", ""),
     CapabilityDescriptor(0x0101, "device.info", "device", "object", "DeviceInfoCapability"),
+    CapabilityDescriptor(0x0102, "device.enrollment", "device", "object", "DeviceEnrollmentCapability"),
     CapabilityDescriptor(0x0401, "firmware.update", "firmware", "object", "FirmwareUpdateCapabilities"),
     CapabilityDescriptor(0x0801, "video.stream", "video", "object", "VideoStreamCapabilities"),
     CapabilityDescriptor(0x0901, "audio.algorithm", "audio", "object", "AudioAlgorithmCapability"),
     CapabilityDescriptor(0x0902, "audio.stream", "audio", "object", "AudioStreamCapabilities"),
+    CapabilityDescriptor(0x0D01, "signage.playlist", "signage", "object", "SignagePlaylistCapability"),
     CapabilityDescriptor(0x0E01, "network.interface", "network", "object", "NetworkInterfaceCapability"),
     CapabilityDescriptor(0x0E02, "network.ip", "network", "object", "NetworkIpCapability"),
     CapabilityDescriptor(0x0E03, "network.wifi", "network", "object", "NetworkWifiCapabilities"),
@@ -309,6 +331,8 @@ K_CAPABILITY_REGISTRY: Sequence[CapabilityDescriptor] = (
     CapabilityDescriptor(0x1605, "cast.backend", "cast", "object", "CastBackendCapability"),
     CapabilityDescriptor(0x1606, "cast.flowControl", "cast", "object", "CastFlowControlCapability"),
     CapabilityDescriptor(0x1607, "cast.status", "cast", "object", "CastStatusCapability"),
+    CapabilityDescriptor(0x1701, "software.config", "software", "object", "SoftwareConfigCapability"),
+    CapabilityDescriptor(0x1702, "software.updatePolicy", "software", "object", "SoftwareUpdatePolicyCapability"),
 )
 
 
