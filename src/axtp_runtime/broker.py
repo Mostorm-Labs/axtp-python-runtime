@@ -4,7 +4,7 @@ from typing import Callable, Dict, List, Optional
 
 from .generated.axtp_ids_generated import ErrorCode, RpcEncoding, RpcOp
 from .generated.registry import MethodRegistry
-from .model import RpcPayload, body_encoding_for_rpc_encoding
+from .model import RpcPayload, StreamPayload, body_encoding_for_rpc_encoding
 
 
 class BrokerTaskType(str, Enum):
@@ -19,6 +19,7 @@ class BrokerResultType(str, Enum):
     RpcResponse = "rpcResponse"
     RpcError = "rpcError"
     Event = "event"
+    StreamData = "streamData"
     Noop = "noop"
 
 
@@ -32,20 +33,32 @@ class RpcContext:
     source_protocol: int
 
 
-RawRpcHandler = Callable[[RpcContext, RpcPayload], bytes]
+@dataclass
+class RpcResponseData:
+    body: bytes = b""
+    encoding: RpcEncoding = RpcEncoding.Json
+    override_encoding: bool = False
+    status_code: ErrorCode = ErrorCode.Success
+    override_status: bool = False
+
+
+RawRpcHandler = Callable[[RpcContext, RpcPayload], object]
 JsonRpcHandler = Callable[[RpcContext, str], str]
+StreamHandler = Callable[[RpcContext, StreamPayload], Optional["BrokerResult"]]
 
 
 @dataclass
 class BrokerTask:
     type: BrokerTaskType
     rpc: Optional[RpcPayload] = None
+    stream: Optional[StreamPayload] = None
 
 
 @dataclass
 class BrokerResult:
     type: BrokerResultType
     rpc: Optional[RpcPayload] = None
+    stream: Optional[StreamPayload] = None
 
 
 class BusinessRouter:
@@ -94,9 +107,17 @@ class BusinessRouter:
             source_protocol=int(request.meta.source_protocol),
         )
         try:
-            body = handler(context, request)
-            response.body = body if isinstance(body, bytes) else bytes(body)
-            response.body_encoding = body_encoding_for_rpc_encoding(request.encoding)
+            result = handler(context, request)
+            if isinstance(result, RpcResponseData):
+                if result.override_encoding:
+                    response.encoding = result.encoding
+                    response.body_encoding = body_encoding_for_rpc_encoding(result.encoding)
+                if result.override_status:
+                    response.status_code = result.status_code
+                response.body = result.body
+            else:
+                response.body = result if isinstance(result, bytes) else bytes(result)
+                response.body_encoding = body_encoding_for_rpc_encoding(request.encoding)
         except Exception:
             response.status_code = ErrorCode.RpcExecutionFailed
         return response
@@ -107,6 +128,7 @@ class BasicBroker:
         self._tasks: List[BrokerTask] = []
         self._results: List[BrokerResult] = []
         self._router = BusinessRouter()
+        self._stream_handler: Optional[StreamHandler] = None
 
     def registry(self) -> MethodRegistry:
         return self._router.registry()
@@ -125,6 +147,13 @@ class BasicBroker:
                 self._results.append(BrokerResult(result_type, response))
             elif task.type == BrokerTaskType.RpcEvent and task.rpc is not None:
                 self._results.append(BrokerResult(BrokerResultType.Event, task.rpc))
+            elif task.type == BrokerTaskType.StreamData and task.stream is not None:
+                if self._stream_handler is not None:
+                    result = self._stream_handler(self._context_for(task), task.stream)
+                    if result is not None:
+                        self._results.append(result)
+                else:
+                    self._results.append(BrokerResult(BrokerResultType.StreamData, stream=task.stream))
 
     def poll_result(self) -> Optional[BrokerResult]:
         if not self._results:
@@ -136,3 +165,17 @@ class BasicBroker:
 
     def register_json_method(self, method, handler: JsonRpcHandler) -> None:
         self._router.register_json_method(method, handler)
+
+    def register_stream_handler(self, handler: StreamHandler) -> None:
+        self._stream_handler = handler
+
+    def _context_for(self, task: BrokerTask) -> RpcContext:
+        rpc = task.rpc or RpcPayload()
+        return RpcContext(
+            session_id=(task.stream.meta.session_id if task.stream is not None else rpc.meta.session_id),
+            request_id=rpc.request_id,
+            method_id=rpc.method_or_event_id,
+            method_name=self._router.registry().find_method_name(rpc.method_or_event_id) or "",
+            encoding=rpc.encoding,
+            source_protocol=int(rpc.meta.source_protocol),
+        )

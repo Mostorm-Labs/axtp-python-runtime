@@ -1,4 +1,4 @@
-from .broker import BasicBroker, BrokerResult, BrokerTask, BusinessRouter
+from .broker import BasicBroker, BrokerResult, BrokerTask, BrokerTaskType, BusinessRouter, RpcResponseData
 from .codec import FrameDecoder, FrameEncoder, InboundProcessor, OutboundProcessor
 from .core import AxtpCore, CoreEvent
 from .endpoint import AxtpEndpoint
@@ -21,6 +21,17 @@ from .model import (
     stream_payload,
 )
 from .sdk import AxtpClient, AxtpServer
+from .media_profile import (
+    ActiveMediaStream,
+    MediaKind,
+    MediaStreamInfo,
+    MediaStreamRegistry,
+    MediaStreamStats,
+    OpenMode,
+    OpenStreamResult,
+    install_media_host_handlers,
+)
+from .stream import ActiveStream, StreamInfo, StreamRegistry, StreamStats, to_hex_u32
 from .transport import AxtpWireMode, MockTransport, TransportKind, TransportProfile
 from .wire_io import ByteReader, ByteWriter, crc16_ccitt_false
 from .generated.axtp_ids_generated import *
@@ -35,6 +46,7 @@ __all__ = [
     "BasicBroker",
     "BrokerResult",
     "BrokerTask",
+    "BrokerTaskType",
     "BusinessRouter",
     "ByteReader",
     "ByteWriter",
@@ -51,8 +63,20 @@ __all__ = [
     "OutboundProcessor",
     "PayloadMeta",
     "RpcPayload",
+    "RpcResponseData",
     "SourceProtocol",
     "StreamPayload",
+    "ActiveMediaStream",
+    "ActiveStream",
+    "MediaKind",
+    "MediaStreamInfo",
+    "MediaStreamRegistry",
+    "MediaStreamStats",
+    "OpenMode",
+    "OpenStreamResult",
+    "StreamInfo",
+    "StreamRegistry",
+    "StreamStats",
     "TransportKind",
     "TransportProfile",
     "body_encoding_for_rpc_encoding",
@@ -63,4 +87,6 @@ __all__ = [
     "rpc_payload",
     "rpc_encoding_json_binary",
     "stream_payload",
+    "install_media_host_handlers",
+    "to_hex_u32",
 ]

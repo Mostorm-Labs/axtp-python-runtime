@@ -103,8 +103,8 @@ class Message:
     body: bytes
 
 
-def default_payload_meta() -> PayloadMeta:
-    return PayloadMeta()
+def default_payload_meta(**kwargs: object) -> PayloadMeta:
+    return PayloadMeta(**kwargs)
 
 
 def control_payload(**kwargs: object) -> ControlPayload:

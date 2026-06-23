@@ -61,6 +61,8 @@ class AxtpEndpoint:
                 self._broker.submit(BrokerTask(BrokerTaskType.RpcRequest, rpc=event.rpc))
             elif event.type == CoreEventType.RpcEvent and event.rpc is not None:
                 self._broker.submit(BrokerTask(BrokerTaskType.RpcEvent, rpc=event.rpc))
+            elif event.type == CoreEventType.StreamData and event.stream is not None:
+                self._broker.submit(BrokerTask(BrokerTaskType.StreamData, stream=event.stream))
 
     def _drain_broker_results(self) -> None:
         while True:
