@@ -144,7 +144,6 @@ K_EVENT_REGISTRY: Sequence[EventDescriptor] = (
     EventDescriptor(0x160A, "cast.windowChanged", "cast", "CastWindowChangedEvent"),
     EventDescriptor(0x160B, "cast.backendChanged", "cast", "CastBackendChangedEvent"),
     EventDescriptor(0x160C, "cast.flowControlChanged", "cast", "CastFlowControlChangedEvent"),
-    EventDescriptor(0x160D, "cast.statusChanged", "cast", "CastStatusChangedEvent"),
     EventDescriptor(0x1701, "software.configChanged", "software", "SoftwareConfigChangedEvent"),
     EventDescriptor(0x1702, "software.updatePolicyChanged", "software", "SoftwareUpdatePolicyChangedEvent"),
 )

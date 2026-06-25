@@ -161,7 +161,6 @@ class EventId(IntEnum):
     CastWindowChanged = 0x160A
     CastBackendChanged = 0x160B
     CastFlowControlChanged = 0x160C
-    CastStatusChanged = 0x160D
     SoftwareConfigChanged = 0x1701
     SoftwareUpdatePolicyChanged = 0x1702
 
