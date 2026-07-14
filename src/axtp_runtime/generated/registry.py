@@ -104,6 +104,7 @@ K_METHOD_REGISTRY: Sequence[MethodDescriptor] = (
     MethodDescriptor(0x1610, "cast.setRenderFps", "cast", "CastSetRenderFpsParams", "CastFlowControlState"),
     MethodDescriptor(0x1611, "cast.setFlowPolicy", "cast", "CastSetFlowPolicyParams", "CastFlowControlState"),
     MethodDescriptor(0x1612, "cast.getStatus", "cast", "CastGetStatusParams", "CastStatus"),
+    MethodDescriptor(0x1613, "cast.setAudioDelay", "cast", "CastSetAudioDelayParams", "CastAudioState"),
     MethodDescriptor(0x1701, "software.getConfig", "software", "SoftwareGetConfigParams", "SoftwareConfig"),
     MethodDescriptor(0x1702, "software.setConfig", "software", "SoftwareSetConfigParams", "SoftwareSetConfigResult"),
     MethodDescriptor(0x1703, "software.resetConfig", "software", "SoftwareResetConfigParams", "SoftwareConfig"),
