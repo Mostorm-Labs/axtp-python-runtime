@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from threading import RLock
 from typing import Dict, List, Optional, Set
 
 from .broker import BrokerResult, BrokerResultType
@@ -27,22 +28,38 @@ class CoreEvent:
 
 
 class PendingCallTable:
+    """Thread-safe pending/resolved response table keyed by session and request."""
+
     def __init__(self) -> None:
-        self._pending: Set[int] = set()
-        self._resolved: Dict[int, RpcPayload] = {}
+        self._pending: Set[tuple[int, int]] = set()
+        self._resolved: Dict[tuple[int, int], RpcPayload] = {}
+        self._lock = RLock()
 
-    def expect(self, request_id: int) -> None:
-        self._pending.add(request_id)
+    def expect(self, request_id: int, session_id: int = 0) -> None:
+        with self._lock:
+            self._pending.add((session_id, request_id))
 
-    def resolve(self, request_id: int, payload: RpcPayload) -> None:
-        self._resolved[request_id] = payload
-        self._pending.discard(request_id)
+    def resolve_if_pending(self, request_id: int, payload: RpcPayload, session_id: int = 0) -> bool:
+        key = (session_id, request_id)
+        with self._lock:
+            if key not in self._pending:
+                return False
+            self._pending.remove(key)
+            self._resolved[key] = payload
+            return True
 
-    def is_pending(self, request_id: int) -> bool:
-        return request_id in self._pending
+    def is_pending(self, request_id: int, session_id: int = 0) -> bool:
+        with self._lock:
+            return (session_id, request_id) in self._pending
 
-    def try_take_resolved(self, request_id: int) -> Optional[RpcPayload]:
-        return self._resolved.pop(request_id, None)
+    def try_take_resolved(self, request_id: int, session_id: Optional[int] = None) -> Optional[RpcPayload]:
+        with self._lock:
+            if session_id is not None:
+                return self._resolved.pop((session_id, request_id), None)
+            matches = [key for key in self._resolved if key[1] == request_id]
+            if len(matches) != 1:
+                return None
+            return self._resolved.pop(matches[0])
 
 
 class ControlSession:
@@ -95,10 +112,10 @@ class AxtpCore:
         elif payload.op == RpcOp.Event:
             self._events.append(CoreEvent(CoreEventType.RpcEvent, rpc=payload))
         elif payload.op == RpcOp.RequestResponse:
-            if not self._pending_calls.is_pending(payload.request_id) and payload.meta.source_protocol == SourceProtocol.JsonRpc:
+            sid = payload.meta.session_id
+            resolved = self._pending_calls.resolve_if_pending(payload.request_id, payload, sid)
+            if not resolved and payload.meta.source_protocol == SourceProtocol.JsonRpc:
                 self._outbound.send_rpc_response(payload)
-            else:
-                self._pending_calls.resolve(payload.request_id, payload)
 
     def on_stream(self, payload: StreamPayload) -> None:
         self._events.append(CoreEvent(CoreEventType.StreamData, stream=payload))
@@ -118,11 +135,11 @@ class AxtpCore:
         elif result.type == BrokerResultType.Event:
             self._outbound.send_event(result.rpc)
 
-    def expect_rpc_response(self, request_id: int) -> None:
-        self._pending_calls.expect(request_id)
+    def expect_rpc_response(self, request_id: int, session_id: int = 0) -> None:
+        self._pending_calls.expect(request_id, session_id)
 
-    def try_take_rpc_response(self, request_id: int) -> Optional[RpcPayload]:
-        return self._pending_calls.try_take_resolved(request_id)
+    def try_take_rpc_response(self, request_id: int, session_id: Optional[int] = None) -> Optional[RpcPayload]:
+        return self._pending_calls.try_take_resolved(request_id, session_id)
 
     def try_pop_outbound_bytes(self) -> Optional[bytes]:
         if not self._outbound_bytes:

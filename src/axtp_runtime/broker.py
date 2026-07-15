@@ -95,7 +95,13 @@ class BusinessRouter:
         )
         handler = self._method_handlers.get(request.method_or_event_id)
         if handler is None:
-            response.status_code = ErrorCode.RpcMethodNotFound
+            # A generated/known method which has no runtime binding is a
+            # capability gap, not an unknown RPC.  Preserve the wire-level
+            # distinction so callers can fall back appropriately.
+            if self._method_registry.find_method_name(request.method_or_event_id) is not None:
+                response.status_code = ErrorCode.NotSupported
+            else:
+                response.status_code = ErrorCode.RpcMethodNotFound
             return response
         method_name = self._method_registry.find_method_name(request.method_or_event_id) or ""
         context = RpcContext(

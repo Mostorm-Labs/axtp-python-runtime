@@ -36,12 +36,12 @@ class AxtpEndpoint:
         return self._broker
 
     def send_rpc_request(self, payload: RpcPayload) -> None:
-        self._core.expect_rpc_response(payload.request_id)
+        self._core.expect_rpc_response(payload.request_id, payload.meta.session_id)
         self._core.send_rpc_request(payload)
         self.flush_outbound()
 
-    def try_take_rpc_response(self, request_id: int):
-        return self._core.try_take_rpc_response(request_id)
+    def try_take_rpc_response(self, request_id: int, session_id: Optional[int] = None):
+        return self._core.try_take_rpc_response(request_id, session_id)
 
     def flush_outbound(self) -> None:
         if self._transport is None:

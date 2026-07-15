@@ -1,12 +1,18 @@
 runtime: axtp-python-runtime
 spec_min: spec/v0.0.2
-required_levels:
+required_levels: []
+optional_levels: []
+unsupported_levels:
   - core
   - framed-binary
-optional_levels:
   - capability
+  - websocket-jsonrpc
   - event
   - stream
-unsupported_levels:
-  - websocket-jsonrpc
-
+unsupported_reasons:
+  core: no shared YAML case-graph adapter in the Python conformance runner
+  framed-binary: no shared YAML case-graph adapter for framed CONTROL/RPC/STREAM scenarios
+  capability: generated registry unit checks do not execute the shared YAML case graph
+  websocket-jsonrpc: no WebSocket session-role adapter in the Python conformance runner
+  event: no shared YAML case-graph adapter or subscription session
+  stream: codec round-trip unit checks do not execute stream control/data case graphs

@@ -71,14 +71,14 @@ class AxtpClient:
             return 0
         return self.send_raw(int(method_id), RpcEncoding.Json, params_json.encode("utf-8"), request_id)
 
-    def try_take_rpc_response(self, request_id: int) -> Optional[RpcPayload]:
-        response = self._endpoint.try_take_rpc_response(request_id)
+    def try_take_rpc_response(self, request_id: int, session_id: Optional[int] = None) -> Optional[RpcPayload]:
+        response = self._endpoint.try_take_rpc_response(request_id, session_id)
         if response is not None:
             self._last_error = response.status_code
         return response
 
-    def try_take_json_response(self, request_id: int) -> Optional[str]:
-        response = self.try_take_rpc_response(request_id)
+    def try_take_json_response(self, request_id: int, session_id: Optional[int] = None) -> Optional[str]:
+        response = self.try_take_rpc_response(request_id, session_id)
         if response is None:
             return None
         return response.body.decode("utf-8")
